@@ -17,26 +17,29 @@ class SignupController extends GetxController {
   GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
   final hidePassword = true.obs;
   final privacyPolicy = true.obs;
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final firstNameController = TextEditingController();
-  final lastNameController = TextEditingController();
-  final userNameController = TextEditingController();
+  final email = TextEditingController();
+  final password = TextEditingController();
+  final firstName = TextEditingController();
+  final lastName = TextEditingController();
+  final userName = TextEditingController();
 
-  final phoneNumberController = TextEditingController();
+  final phoneNumber = TextEditingController();
 
   void signup() async {
     try {
       // Start loading
       TFullScreenLoader.openLoadingDialog(
-          'We are Processing your information...', TImages.applePay);
+          'We are Processing your information...', TImages.docerAnimation);
 
       // Check Internet Connectivity
       final isConnected = await NetworkManager.instance.isConnected();
-      if (!isConnected) return;
+      if (!isConnected) {
+        TFullScreenLoader.stopLoading();
+      }
 
       // Check if form is valid
       if (!signupFormKey.currentState!.validate()) {
+        TFullScreenLoader.stopLoading();
         return;
       }
       // Privacy Policy Check
@@ -49,33 +52,39 @@ class SignupController extends GetxController {
       }
       // Register user in the Firebase Authenication & save data in to Firebase
       final userCredential = await AuthenticationRepository.instance
-          .resgisterWithEmailAndPassword(
-              emailController.text.trim(), passwordController.text.trim());
+          .registerWithEmailAndPassword(
+              email.text.trim(), password.text.trim());
       //  Save Authenticated user data in the Firebase Firestore
       final newUser = UserModel(
         id: userCredential.user!.uid,
-        firstName: firstNameController.text.trim(),
-        lastName: lastNameController.text.trim(),
-        username: userNameController.text.trim(),
-        email: emailController.text.trim(),
-        phoneNumber: phoneNumberController.text.trim(),
+        firstName: firstName.text.trim(),
+        lastName: lastName.text.trim(),
+        username: userName.text.trim(),
+        email: email.text.trim(),
+        phoneNumber: phoneNumber.text.trim(),
         profilePicture: '',
       );
 
       final userRepository = Get.put(UserRepository());
-      userRepository.saveUserRecord(newUser);
+      await userRepository.saveUserRecord(newUser);
+
+      // Remove Loader
+      TFullScreenLoader.stopLoading();
 
       //  Show Success Message
       TLoaders.succcessSnackBar(
           title: 'Congradulation',
           message: 'Your account has been created! Verify email to continue');
-      Get.to(()=>const VerifyEmailScreen());
+      Get.to(
+        () => VerifyEmailScreen(
+          email: email.text.trim(),
+        ),
+      );
     } catch (e) {
       // Show generic error to the user
-      TLoaders.errorSnackBar(title: 'Oh Snap..!', message: e.toString());
-    } finally {
-      // Remove Loader
       TFullScreenLoader.stopLoading();
+
+      TLoaders.errorSnackBar(title: 'Oh Snap..!', message: e.toString());
     }
   }
 }

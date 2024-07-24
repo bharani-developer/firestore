@@ -8,13 +8,12 @@ import 'package:store/data/repostries/authentication/authentication_repository.d
 import 'package:store/firebase_options.dart';
 
 Future<void> main() async {
-  //  widget binding
-  final WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // Widget binding
+  final WidgetsBinding widgetsBinding =
+      WidgetsFlutterBinding.ensureInitialized();
 
-  //  Getx local storage
+  // GetX local storage
   await GetStorage.init();
-
-  // TODO: Init payment methods
 
   // Preserve native splash screen
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -24,12 +23,9 @@ Future<void> main() async {
       .then(
     (FirebaseApp value) {
       Get.put(AuthenticationRepository());
+      FlutterNativeSplash.remove();
     },
   );
-
-  // TODO: Initialize authentication
-
-  // TODO: Load all the material design, theme, localization, bindings
 
   runApp(const App());
 }

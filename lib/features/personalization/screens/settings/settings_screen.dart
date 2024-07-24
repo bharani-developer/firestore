@@ -6,6 +6,7 @@ import 'package:store/common/widgets/containers/primary_header_container.dart';
 import 'package:store/common/widgets/list_tiles/settings_menu_tile.dart';
 import 'package:store/common/widgets/list_tiles/user_profile_tile.dart';
 import 'package:store/common/widgets/texts/section_heading.dart';
+import 'package:store/data/repostries/authentication/authentication_repository.dart';
 import 'package:store/features/personalization/screens/address/user_address_screen.dart';
 import 'package:store/features/personalization/screens/profile/profile_screen.dart';
 import 'package:store/features/shop/screens/order/orders_screen.dart';
@@ -17,6 +18,8 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+        final controller = Get.put(AuthenticationRepository());
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -73,7 +76,7 @@ class SettingsScreen extends StatelessWidget {
                     icon: Iconsax.bag_tick,
                     title: 'My Orders',
                     subTitle: 'In-Progress and Completed orders',
-                    onTap: () =>Get.to(()=> const OrderScreen()),
+                    onTap: () => Get.to(() => const OrderScreen()),
                   ),
                   TSettingsMenuTile(
                     icon: Iconsax.bank,
@@ -139,7 +142,9 @@ class SettingsScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                        onPressed: () {}, child: const Text('Logout')),
+                        onPressed: () =>
+                            controller.logout(),
+                        child: const Text('Logout')),
                   ),
                   const SizedBox(
                     height: TSizes.spaceBtwSections * 2.5,

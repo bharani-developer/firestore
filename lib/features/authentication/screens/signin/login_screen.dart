@@ -24,7 +24,7 @@ class LoginScreen extends StatelessWidget {
               Column(
                 children: [
                   const TLoginHeader(),
-                  const TLoginForm(),
+                   TLoginForm(),
                   TFormDivider(dividerText: TTexts.orSignInWith.capitalize!),
                   const SizedBox(height: TSizes.spaceBtwSections),
                   const TSocialButtons()

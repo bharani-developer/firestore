@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 import 'package:store/common/styles/spacing_styles.dart';
 import 'package:store/utils/constants/sizes.dart';
 import 'package:store/utils/constants/text_strings.dart';
-import 'package:store/utils/helpers/helper_functions.dart';
 
 class SuccessScreen extends StatelessWidget {
   const SuccessScreen({
@@ -20,16 +20,16 @@ class SuccessScreen extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: TSpacingStyle.paddingWithAppBarHeight,
+          padding: TSpacingStyle.paddingWithAppBarHeight * 2,
           child: Column(
             children: [
-              Image(
-                image: AssetImage(image),
-                width: THelperFunctions.screenWidth() * 0.6,
-              ),
+              //  Image
+              Lottie.asset(image,
+                  width: MediaQuery.of(context).size.width * 0.6),
               const SizedBox(
                 height: TSizes.spaceBtwSections,
               ),
+              // Title & SubTitle
               Text(
                 title,
                 style: Theme.of(context).textTheme.headlineMedium,
@@ -46,6 +46,7 @@ class SuccessScreen extends StatelessWidget {
               const SizedBox(
                 height: TSizes.spaceBtwSections,
               ),
+              //  Buttons
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
