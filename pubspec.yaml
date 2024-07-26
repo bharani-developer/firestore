@@ -21,6 +21,7 @@ dependencies:
   connectivity_plus: ^6.0.3
   flutter_native_splash: ^2.4.1
   smooth_page_indicator: ^1.2.0
+  shimmer: ^3.0.0
 
   # Icons
   iconsax: ^0.0.8

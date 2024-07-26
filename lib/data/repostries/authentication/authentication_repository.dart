@@ -6,6 +6,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
 import 'package:store/features/authentication/screens/Onboarding/onboarding_screen.dart';
 import 'package:store/features/authentication/screens/signin/login_screen.dart';
 import 'package:store/features/authentication/screens/signup/verify_email_screen.dart';
@@ -22,35 +23,32 @@ class AuthenticationRepository extends GetxController {
   final deviceStorage = GetStorage();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  // Get Authenricated User Data
+  User? get authUser => _auth.currentUser;
+
   @override
   void onReady() {
     super.onReady();
     FlutterNativeSplash.remove();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       screenRedirect();
     });
   }
 
-
   // Function to show relevant screen
-void screenRedirect() async {
+  void screenRedirect() async {
     final user = _auth.currentUser;
-    print("Current user: $user");
     if (user != null) {
       if (user.emailVerified) {
-        print("Navigating to NavigationMenu");
         Get.offAll(() => const NavigationMenu());
       } else {
-        print("Navigating to VerifyEmailScreen");
         Get.offAll(() => VerifyEmailScreen(email: _auth.currentUser?.email));
       }
     } else {
       deviceStorage.writeIfNull('IsFirstTime', true);
       if (deviceStorage.read('IsFirstTime') != true) {
-        print("Navigating to LoginScreen");
         Get.offAll(() => const LoginScreen());
       } else {
-        print("Navigating to OnBoardingScreen");
         Get.offAll(const OnBoardingScreen());
       }
     }
@@ -99,6 +97,8 @@ void screenRedirect() async {
 
 // --- ReAuthenticate - user
 
+// -- Email Verification - Mail Verification
+
   Future<void> sendEmailVerification() async {
     try {
       await _auth.currentUser?.sendEmailVerification();
@@ -115,8 +115,9 @@ void screenRedirect() async {
     }
   }
 
-// -- Email Verification - Mail Verification
+/* -------------------Federated identify & Social sign-in----------------------*/
 
+// Google Authentication - Google
   Future<UserCredential?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? userAccount = await GoogleSignIn().signIn();
@@ -128,7 +129,7 @@ void screenRedirect() async {
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
-      
+
       return await _auth.signInWithCredential(credentials);
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
@@ -143,14 +144,25 @@ void screenRedirect() async {
       return null;
     }
   }
+  // Faceboook Authentication - Facebook
 
 // --- Email Authentication - Forget Password
-
-/* -------------------Federated identify & Social sign-in----------------------*/
-
-// Google Authentication - Google
-// Faceboook Authentication - Facebook
-
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on FormatException {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      if (kDebugMode) print("Something went wrong : $e");
+      return;
+    }
+  }
 /* ------------------- Remove ----------------------*/
 // Logout User -- Valid for any any Authentication
 

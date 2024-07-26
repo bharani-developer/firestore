@@ -38,14 +38,15 @@ class TAnimationLoaderWidget extends StatelessWidget {
               ? SizedBox(
                   width: 250,
                   child: OutlinedButton(
-                      onPressed: onActionPressed,
-                      child: Text(
-                        actionText!,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .apply(color: TColors.light),
-                      )),
+                    onPressed: onActionPressed,
+                    child: Text(
+                      actionText!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .apply(color: TColors.light),
+                    ),
+                  ),
                 )
               : const SizedBox()
         ],

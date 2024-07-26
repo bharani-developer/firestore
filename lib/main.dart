@@ -3,6 +3,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 import 'package:store/app.dart';
 import 'package:store/data/repostries/authentication/authentication_repository.dart';
 import 'package:store/firebase_options.dart';
