@@ -6,6 +6,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:store/data/repostries/user/user_repository.dart';
 
 import 'package:store/features/authentication/screens/Onboarding/onboarding_screen.dart';
 import 'package:store/features/authentication/screens/signin/login_screen.dart';
@@ -163,6 +164,27 @@ class AuthenticationRepository extends GetxController {
       return;
     }
   }
+
+  // ReAuthenticate
+  Future<void> reAuthenticateWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      AuthCredential credentrial =
+          EmailAuthProvider.credential(email: email, password: password);
+      await _auth.currentUser!.reauthenticateWithCredential(credentrial);
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on FormatException {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      if (kDebugMode) print("Something went wrong : $e");
+      return;
+    }
+  }
 /* ------------------- Remove ----------------------*/
 // Logout User -- Valid for any any Authentication
 
@@ -183,5 +205,22 @@ class AuthenticationRepository extends GetxController {
       throw 'Something went wrong. Please try again.';
     }
   }
-}
+
 // Delete User - Remove User Auth and FireStore Account
+  Future<void> deleteAccount() async {
+    try {
+      await UserRepository.instance.removeUserRecord(_auth.currentUser!.uid);
+      await _auth.currentUser?.delete();
+    } on FirebaseAuthException catch (e) {
+      throw TFirebaseAuthException(e.code).message;
+    } on FirebaseException catch (e) {
+      throw TFirebaseException(e.code).message;
+    } on FormatException {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (e) {
+      throw 'Something went wrong. Please try again.';
+    }
+  }
+}

@@ -4,6 +4,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:store/common/widgets/appbar/appbar.dart';
 import 'package:store/common/widgets/images/circular_image.dart';
 import 'package:store/common/widgets/texts/section_heading.dart';
+import 'package:store/features/personalization/controllers/user_controller.dart';
+import 'package:store/features/personalization/screens/profile/widgets/change_name_screen.dart';
 import 'package:store/features/personalization/screens/profile/widgets/profile_menu.dart';
 import 'package:store/features/shop/screens/home/home_screen.dart';
 import 'package:store/utils/constants/image_strings.dart';
@@ -14,6 +16,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = UserController.instance;
     return Scaffold(
       appBar: const TAppBar(
         showBackArrow: true,
@@ -45,7 +48,6 @@ class ProfileScreen extends StatelessWidget {
                     const SizedBox(
                       height: TSizes.spaceBtwItems,
                     ),
-
                     const TSectionHeading(
                       title: 'Profile Information',
                       showActionButton: false,
@@ -53,18 +55,16 @@ class ProfileScreen extends StatelessWidget {
                     const SizedBox(
                       height: TSizes.spaceBtwItems,
                     ),
-
                     TProfileMenu(
                       title: 'Name',
-                      value: 'Bharani Karthikeyan',
-                      onPressed: () {},
+                      value: controller.user.value.fullName,
+                      onPressed: () => Get.to(const ChangeName()),
                     ),
                     TProfileMenu(
                       title: 'Username',
-                      value: 'bharani.developer',
+                      value: controller.user.value.username,
                       onPressed: () {},
                     ),
-
                     const SizedBox(
                       height: TSizes.spaceBtwItems,
                     ),
@@ -72,7 +72,6 @@ class ProfileScreen extends StatelessWidget {
                     const SizedBox(
                       height: TSizes.spaceBtwItems,
                     ),
-
                     const TSectionHeading(
                       title: 'Personal Information',
                       showActionButton: false,
@@ -80,21 +79,20 @@ class ProfileScreen extends StatelessWidget {
                     const SizedBox(
                       height: TSizes.spaceBtwItems,
                     ),
-
                     TProfileMenu(
                       title: 'User ID',
-                      value: '536987',
+                      value: controller.user.value.id,
                       icon: Iconsax.copy,
                       onPressed: () {},
                     ),
                     TProfileMenu(
                       title: 'E-mail',
-                      value: 'bharani.developer@gmail.com',
+                      value: controller.user.value.email,
                       onPressed: () {},
                     ),
                     TProfileMenu(
                       title: 'Phone Number',
-                      value: '+91 9566935886',
+                      value: controller.user.value.phoneNumber,
                       onPressed: () {},
                     ),
                     TProfileMenu(
@@ -113,14 +111,16 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     Center(
                       child: TextButton(
-                        onPressed: () => Get.to(() => const HomeScreen()),
-                        child: const Text('Close Account',
-                            style: TextStyle(color: Colors.red)),
+                        onPressed: () => controller.deleteAccountWarningPopup(),
+                        child: const Text(
+                          'Close Account',
+                          style: TextStyle(color: Colors.red),
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
